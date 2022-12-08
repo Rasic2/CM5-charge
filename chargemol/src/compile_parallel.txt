@@ -1,5 +1,5 @@
 #!/bin/bash
-gfortran=/home/apps/gcc/rh/devtoolset-7/root/usr/bin/gfortran
+gfortran=/usr/bin/gfortran
 
 $gfortran \
 -o Chargemol_09_02_2017_linux_parallel -fopenmp -static-libgfortran \
