@@ -164,9 +164,16 @@
      WRITE(output_FID,*) 'Information for noniterative CM5 method will be printed now.'
      FLUSH(output_FID)
      CALL compute_CM5_NACs()
-     WRITE(output_FID,*) 'Hirshfeld and CM5 analysis finished, calculation of iterative AIM will proceed.'
+     !WRITE(output_FID,*) 'Hirshfeld and CM5 analysis finished, calculation of iterative AIM will proceed.'
+
+!!! hzhou modified
+     WRITE(output_FID,*) 'Hirshfeld and CM5 analysis finished!'
+     WRITE(output_FID,*) 
+     WRITE(output_FID,*) 'If you want to do more calculation, Please modify the module_DDEC6_valence_iterator.f08 file! Bye!'
      FLUSH(output_FID)
-   END IF   
+   END IF
+   stop
+!!!!!!!!!!!!!!!!!!!!
    WRITE(output_FID,*) 'iter = ', iter
    WRITE(output_FID,*) 'Localized charges for the current iteration: '
    WRITE(output_FID,'(10f14.6)')localized_net_atomic_charge

@@ -148,7 +148,7 @@
    CALL DDEC3_valence_iterator()
  ELSE
    charge_type = 'ddec6'
-   CALL DDEC6_valence_iterator()
+   CALL DDEC6_valence_iterator() ! modified by hzhou
  END IF
  
  CALL local_multipole_moment_analysis()

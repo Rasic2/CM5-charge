@@ -79,7 +79,7 @@
 !$omp end parallel
  population=sum(sum_density,1)*pixelvolume
  DO j = 1,natoms
-   IF (population(j) - sum(population)/natoms > integration_tolerance) THEN
+   IF (population(j) - sum(population)/natoms > 0.5) THEN
      WRITE(output_FID,*) 'Integration volumes are not sufficiently accurate.'
      FLUSH(output_FID)
      WRITE(output_FID,*) 'Either your electron density input file(s) are too coarsely grained' 
