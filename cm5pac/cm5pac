@@ -1,0 +1,32 @@
+#!/bin/bash
+echo 'Input file:'
+read input
+echo 'Charge model:'
+echo '1: CM5 for Gaussian output'
+echo '2: CM5M for Gaussian output'
+echo '3: CM5 for Periodic System'
+echo '4: CM5M for Periodic System'
+read  switch
+
+if [[ switch -eq 1 || switch -eq 2 || switch -eq 3 || switch -eq 4 ]] ; then
+  /home/users/hzhou/soft/cm5pac/cm5pac.exe $switch <$input> $input'.temp'
+  sed -i 's/[ ]*$//' $input'.temp'
+  echo "Hello!"
+else
+  echo 'ERROR'
+  exit
+fi
+
+if [[ switch -eq 1 || switch -eq 2 ]] ; then
+  if grep -q CM5ERROR $input'.temp' ; then
+    echo "File $input"
+    grep 'CM5ERROR' $input'.temp'
+    rm $input'.temp'
+  else
+    mv $input'.temp' $input
+  fi
+else
+  mv $input'.temp' $input'.out'
+fi
+
+
