@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.1)
-project(chargemol Fortran)
+
+project(CM5-charge Fortran)
 
 option(ENABLE_OPENMP "Enable OpenMP parallelization" ON)
 option(ENABLE_STATIC_LINK "Force static linkage" OFF)
 
-set(SRC
+set(CMAKE_INSRALL_PREFIX "${CMAKE_SOURCE_DIR}")
+
+# Compile Chargemol_09_02_2017_linux_parallel
+set(CHARGEMOL_SRC
     src/module_precision.f08
     src/module_global_parameters.f08
     src/module_common_variable_declarations.f08
@@ -65,16 +69,15 @@ set(SRC
     src/module_print_atomic_densities_file.f08
     src/chargemol.f08
     )
+list(TRANSFORM CHARGEMOL_SRC PREPEND "chargemol/")
 
-set_source_files_properties(${SRC} PROPERTIES LANGUAGE Fortran)
-set(CHARGEMOL_BINARY_NAME chargemol.x)
+set_source_files_properties(${CHARGEMOL_SRC} PROPERTIES LANGUAGE Fortran)
+set(CHARGEMOL_BINARY_NAME Chargemol_09_02_2017_linux_parallel)
 
 if(ENABLE_OPENMP)
     find_package(OpenMP REQUIRED)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
 endif(ENABLE_OPENMP)
-
-add_executable(${CHARGEMOL_BINARY_NAME} "${SRC}")
 
 if(ENABLE_STATIC_LINK)
     # Only handle GCC for now.
@@ -85,3 +88,23 @@ if(ENABLE_STATIC_LINK)
         set_target_properties(${CHARGEMOL_BINARY_NAME} PROPERTIES LINK_FLAGS ${CHARGEMOL_LINK_FLAGS})
     endif(DEFINED CHARGEMOL_LINK_FLAGS)
 endif(ENABLE_STATIC_LINK)
+
+add_executable(${CHARGEMOL_BINARY_NAME} "${CHARGEMOL_SRC}")
+add_custom_command(TARGET ${CHARGEMOL_BINARY_NAME} POST_BUILD COMMAND rm -rf *.mod COMMENT "clean *.mod files")
+
+# Compile cm5pac.exe
+set(CM5PAC_SRC cm5pac/cm5pac.f)
+set_source_files_properties(${CHARGEMOL_SRC} PROPERTIES LANGUAGE Fortran)
+set(CM5PAC_BINARY_NAME cm5pac.exe)
+add_executable(${CM5PAC_BINARY_NAME} "${CM5PAC_SRC}")
+
+# set CM5.sh
+set(CM5_SRC "${CMAKE_SOURCE_DIR}/CM5.sh")
+file(COPY ${CM5_SRC} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+file(RENAME "${CMAKE_CURRENT_BINARY_DIR}/CM5.sh" "${CMAKE_CURRENT_BINARY_DIR}/CM5")
+
+# make install
+install(TARGETS ${CHARGEMOL_BINARY_NAME} ${CM5PAC_BINARY_NAME}
+        RUNTIME DESTINATION "${CMAKE_INSRALL_PREFIX}/bin")
+install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/CM5"
+        DESTINATION "${CMAKE_INSRALL_PREFIX}/bin")
