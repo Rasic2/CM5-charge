@@ -1,0 +1,14 @@
+name: CMake
+on: push
+jobs:
+  CM5Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compile && Install
+        run: |
+          cmake . -B build && cd build && make && make install
+      - name: Tests
+        run: |
+          make test
