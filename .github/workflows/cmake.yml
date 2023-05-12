@@ -11,4 +11,5 @@ jobs:
           cmake . -B build && cd build && make && make install
       - name: Tests
         run: |
+          pwd
           make test
