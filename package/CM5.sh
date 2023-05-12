@@ -6,6 +6,14 @@ LIBDIR=${BINDIR}/../lib
 chargemol=${BINDIR}/Chargemol_09_02_2017_linux_parallel
 cm5pac=${BINDIR}/cm5pac.exe
 
+# check files exist
+for file in AECCAR0 AECCAR2 CHGCAR OUTCAR POSCAR POTCAR; do
+    if [ ! -f "$file" ]; then
+        echo -e "\n \033[1;31m \`$file\` not exist, please check! \033[0m \n"
+        exit 1
+    fi
+done
+
 NIONS=$(grep "NIONS" OUTCAR | awk -F= '{print $NF}')
 Linenu=$(($NIONS / 10 + 1))
 POSEND=$(($NIONS + 10 - 1))
