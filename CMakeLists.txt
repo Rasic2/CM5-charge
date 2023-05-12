@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 3.1)
 project(CM5-charge Fortran)
 
 option(ENABLE_OPENMP "Enable OpenMP parallelization" ON)
-option(ENABLE_STATIC_LINK "Force static linkage" OFF)
+option(ENABLE_STATIC_LINK "Force static linkage" ON)
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_INSRALL_PREFIX "${CMAKE_SOURCE_DIR}")
 
 # Compile Chargemol_09_02_2017_linux_parallel
@@ -79,6 +80,9 @@ if(ENABLE_OPENMP)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
 endif(ENABLE_OPENMP)
 
+add_executable(${CHARGEMOL_BINARY_NAME} "${CHARGEMOL_SRC}")
+add_custom_command(TARGET ${CHARGEMOL_BINARY_NAME} POST_BUILD COMMAND rm -rf *.mod COMMENT "clean *.mod files")
+
 if(ENABLE_STATIC_LINK)
     # Only handle GCC for now.
     if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
@@ -88,9 +92,6 @@ if(ENABLE_STATIC_LINK)
         set_target_properties(${CHARGEMOL_BINARY_NAME} PROPERTIES LINK_FLAGS ${CHARGEMOL_LINK_FLAGS})
     endif(DEFINED CHARGEMOL_LINK_FLAGS)
 endif(ENABLE_STATIC_LINK)
-
-add_executable(${CHARGEMOL_BINARY_NAME} "${CHARGEMOL_SRC}")
-add_custom_command(TARGET ${CHARGEMOL_BINARY_NAME} POST_BUILD COMMAND rm -rf *.mod COMMENT "clean *.mod files")
 
 # Compile cm5pac.exe
 set(CM5PAC_SRC cm5pac/cm5pac.f)
@@ -108,3 +109,5 @@ install(TARGETS ${CHARGEMOL_BINARY_NAME} ${CM5PAC_BINARY_NAME}
         RUNTIME DESTINATION "${CMAKE_INSRALL_PREFIX}/bin")
 install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/CM5"
         DESTINATION "${CMAKE_INSRALL_PREFIX}/bin")
+install(DIRECTORY "chargemol/atomic_densities"
+        DESTINATION "${CMAKE_INSRALL_PREFIX}/lib")

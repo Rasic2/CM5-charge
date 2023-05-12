@@ -2,6 +2,7 @@
 # created by hzhou@ecust, 2020.9.28
 
 BINDIR=$(realpath $0 | xargs dirname)
+LIBDIR=${BINDIR}/../lib
 chargemol=${BINDIR}/Chargemol_09_02_2017_linux_parallel
 cm5pac=${BINDIR}/cm5pac.exe
 
@@ -25,6 +26,8 @@ cat >job_control.txt <<EOF
 DDEC6 
 </charge type>
 EOF
+atomic_densities_dir=${LIBDIR}/atomic_densities/ # Important: the end of "/" must exist!!! (see https://github.com/pzarabadip/chargemol-light/issues/1)
+sed -i "/atomic_densities/c\\$atomic_densities_dir" job_control.txt
 
 echo -e "\n\033[1;31m \tCHGCAR --> DDEC6 process, Please wait a moment...\033[0m\n"
 $chargemol
