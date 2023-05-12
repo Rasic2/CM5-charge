@@ -2,6 +2,27 @@ cmake_minimum_required(VERSION 3.1)
 
 project(CM5-charge Fortran)
 
+# Use color 
+if(NOT WIN32)
+  string(ASCII 27 Esc)
+  set(Reset       "${Esc}[m")
+  set(Bold        "${Esc}[1m")
+  set(Red         "${Esc}[31m")
+  set(Green       "${Esc}[32m")
+  set(Yellow      "${Esc}[33m")
+  set(Blue        "${Esc}[34m")
+  set(Magenta     "${Esc}[35m")
+  set(Cyan        "${Esc}[36m")
+  set(White       "${Esc}[37m")
+  set(BoldRed     "${Esc}[1;31m")
+  set(BoldGreen   "${Esc}[1;32m")
+  set(BoldYellow  "${Esc}[1;33m")
+  set(BoldBlue    "${Esc}[1;34m")
+  set(BoldMagenta "${Esc}[1;35m")
+  set(BoldCyan    "${Esc}[1;36m")
+  set(BoldWhite   "${Esc}[1;37m")
+endif()
+
 option(ENABLE_OPENMP "Enable OpenMP parallelization" ON)
 option(ENABLE_STATIC_LINK "Force static linkage" ON)
 
@@ -111,11 +132,11 @@ install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/CM5"
         DESTINATION "${CMAKE_INSRALL_PREFIX}/bin")
 install(FILES "chargemol/atomic_densities.tgz"
         DESTINATION "${CMAKE_INSRALL_PREFIX}/lib")
-install(CODE "message(STATUS \"Start extract the atomic_densities\")")
+install(CODE "message(STATUS \"${Blue}Start extract the atomic_densities${Reset}\")")
 install(CODE "set(CMAKE_INSRALL_PREFIX \"${CMAKE_INSRALL_PREFIX}\")")
 install(CODE [[execute_process(COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_INSRALL_PREFIX}/lib tar -zxf atomic_densities.tgz)]])
 install(CODE [[execute_process(COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_INSRALL_PREFIX}/lib rm -rf atomic_densities.tgz)]])
-install(CODE "message(STATUS \"Finish extract the atomic_densities\")")
+install(CODE "message(STATUS \"${Green}Finish extract the atomic_densities${Reset}\")")
 # make test
 enable_testing()
 add_test(NAME test_CM5_command
