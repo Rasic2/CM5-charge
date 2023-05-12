@@ -111,3 +111,13 @@ install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/CM5"
         DESTINATION "${CMAKE_INSRALL_PREFIX}/bin")
 install(DIRECTORY "chargemol/atomic_densities"
         DESTINATION "${CMAKE_INSRALL_PREFIX}/lib")
+
+# make test
+enable_testing()
+add_test(NAME test_CM5_command
+         COMMAND ${CMAKE_SOURCE_DIR}/bin/CM5
+         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
+add_test(NAME test_CM5_file
+         COMMAND rm -rf charge_CM5 input job_control.txt VASP_DDEC_analysis.output
+         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests)
+set_tests_properties(test_CM5_file PROPERTIES DEPENDS CM5TEST REQUIRED_FILES charge_CM5)
