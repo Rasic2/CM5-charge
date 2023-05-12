@@ -129,7 +129,7 @@ install(TARGETS ${CHARGEMOL_BINARY_NAME} ${CM5PAC_BINARY_NAME}
         RUNTIME DESTINATION "${CMAKE_SOURCE_DIR}/bin")
 install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/CM5"
         DESTINATION "${CMAKE_SOURCE_DIR}/bin")
-install(FILES "chargemol/atomic_densities.tgz"
+install(FILES "package/chargemol/atomic_densities.tgz"
         DESTINATION "${CMAKE_SOURCE_DIR}/lib")
 install(CODE "message(STATUS \"${Blue}Start extract the atomic_densities${Reset}\")")
 install(CODE "set(CMAKE_SOURCE_DIR \"${CMAKE_SOURCE_DIR}\")")
