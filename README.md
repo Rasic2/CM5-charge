@@ -26,7 +26,7 @@ then the `Makefile` will generated in the `build` directory.
 2. compile the `chargemol`, `cm5pac`, `CM5` in `build` directory and install them in `bin` directory use the following command (if you want to see the compile process, use `make verbose=1`):
 
 ```bash
-cd  build && make && make install
+cd build && make && make install
 ```
 
 > **Note**
@@ -55,6 +55,6 @@ then the `CM5` command can be used to calculate the CM5 charge!
 ## Requirements
 
 - cmake [version >= 3.1]
-- Fortran Compiler (e.g., gfortran)
+- Fortran Compiler (*e.g.*, gfortran)
 
 Copyright © 2022-2023 `Hui Zhou` All rights reserved.
