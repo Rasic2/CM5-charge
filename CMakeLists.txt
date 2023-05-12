@@ -27,7 +27,6 @@ option(ENABLE_OPENMP "Enable OpenMP parallelization" ON)
 option(ENABLE_STATIC_LINK "Force static linkage" ON)
 
 # set(CMAKE_VERBOSE_MAKEFILE ON) # make verbose=1
-set(CMAKE_INSRALL_PREFIX "${CMAKE_SOURCE_DIR}")
 
 # Compile Chargemol_09_02_2017_linux_parallel
 set(CHARGEMOL_SRC
@@ -91,7 +90,7 @@ set(CHARGEMOL_SRC
     src/module_print_atomic_densities_file.f08
     src/chargemol.f08
     )
-list(TRANSFORM CHARGEMOL_SRC PREPEND "chargemol/")
+list(TRANSFORM CHARGEMOL_SRC PREPEND "package/chargemol/")
 
 set_source_files_properties(${CHARGEMOL_SRC} PROPERTIES LANGUAGE Fortran)
 set(CHARGEMOL_BINARY_NAME Chargemol_09_02_2017_linux_parallel)
@@ -115,28 +114,29 @@ if(ENABLE_STATIC_LINK)
 endif(ENABLE_STATIC_LINK)
 
 # Compile cm5pac.exe
-set(CM5PAC_SRC cm5pac/cm5pac.f)
+set(CM5PAC_SRC package/cm5pac/cm5pac.f)
 set_source_files_properties(${CHARGEMOL_SRC} PROPERTIES LANGUAGE Fortran)
 set(CM5PAC_BINARY_NAME cm5pac.exe)
 add_executable(${CM5PAC_BINARY_NAME} "${CM5PAC_SRC}")
 
 # set CM5.sh
-set(CM5_SRC "${CMAKE_SOURCE_DIR}/CM5.sh")
+set(CM5_SRC package/CM5.sh)
 file(COPY ${CM5_SRC} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 file(RENAME "${CMAKE_CURRENT_BINARY_DIR}/CM5.sh" "${CMAKE_CURRENT_BINARY_DIR}/CM5")
 
 # make install
 install(TARGETS ${CHARGEMOL_BINARY_NAME} ${CM5PAC_BINARY_NAME}
-        RUNTIME DESTINATION "${CMAKE_INSRALL_PREFIX}/bin")
+        RUNTIME DESTINATION "${CMAKE_SOURCE_DIR}/bin")
 install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/CM5"
-        DESTINATION "${CMAKE_INSRALL_PREFIX}/bin")
+        DESTINATION "${CMAKE_SOURCE_DIR}/bin")
 install(FILES "chargemol/atomic_densities.tgz"
-        DESTINATION "${CMAKE_INSRALL_PREFIX}/lib")
+        DESTINATION "${CMAKE_SOURCE_DIR}/lib")
 install(CODE "message(STATUS \"${Blue}Start extract the atomic_densities${Reset}\")")
-install(CODE "set(CMAKE_INSRALL_PREFIX \"${CMAKE_INSRALL_PREFIX}\")")
-install(CODE [[execute_process(COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_INSRALL_PREFIX}/lib tar -zxf atomic_densities.tgz)]])
-install(CODE [[execute_process(COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_INSRALL_PREFIX}/lib rm -rf atomic_densities.tgz)]])
+install(CODE "set(CMAKE_SOURCE_DIR \"${CMAKE_SOURCE_DIR}\")")
+install(CODE [[execute_process(COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_SOURCE_DIR}/lib tar -zxf atomic_densities.tgz)]])
+install(CODE [[execute_process(COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_SOURCE_DIR}/lib rm -rf atomic_densities.tgz)]])
 install(CODE "message(STATUS \"${Green}Finish extract the atomic_densities${Reset}\")")
+
 # make test
 enable_testing()
 add_test(NAME test_CM5_command
