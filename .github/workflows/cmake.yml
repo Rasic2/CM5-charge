@@ -12,4 +12,4 @@ jobs:
       - name: Tests
         run: |
           pwd
-          make test
+          cd build && make test
